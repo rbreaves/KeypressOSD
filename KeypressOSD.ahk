@@ -4,13 +4,14 @@
 #SingleInstance force
 #MaxHotkeysPerInterval 200
 #KeyHistory 0
+#NoTrayIcon
 ListLines, Off
 SetBatchLines, -1
 
 global appVersion := "v2.52"
 global AutoGuiW, BkColor, Bottom_OffsetX, Bottom_OffsetY, Bottom_Screen, Bottom_Win, DisplaySec, FixedX, FixedY
      , FontColor, FontName, FontSize, FontStyle, GuiHeight, GuiPosition, GuiWidth, SettingsGuiIsOpen
-     , ShowModifierKeyCount, ShowMouseButton, ShowSingleKey, ShowSingleModifierKey, ShowStickyModKeyCount
+     , ShowModifierKeyCount, ShowSingleKey, ShowSingleModifierKey, ShowStickyModKeyCount
      , Top_OffsetX, Top_OffsetY, Top_Screen, Top_Win, TransN
      , oLast := {}, hGui_OSD, hGUI_s
 
@@ -71,7 +72,7 @@ CreateHotkey() {
 		Hotkey, % "~*Numpad" A_Index - 1 " Up", _OnKeyUp
 	}
 
-	Otherkeys := "WheelDown|WheelUp|WheelLeft|WheelRight|XButton1|XButton2|Browser_Forward|Browser_Back|Browser_Refresh|Browser_Stop|Browser_Search|Browser_Favorites|Browser_Home|Volume_Mute|Volume_Down|Volume_Up|Media_Next|Media_Prev|Media_Stop|Media_Play_Pause|Launch_Mail|Launch_Media|Launch_App1|Launch_App2|Help|Sleep|PrintScreen|CtrlBreak|Break|AppsKey|NumpadDot|NumpadDiv|NumpadMult|NumpadAdd|NumpadSub|NumpadEnter|Tab|Enter|Esc|BackSpace"
+	Otherkeys := "Browser_Forward|Browser_Back|Browser_Refresh|Browser_Stop|Browser_Search|Browser_Favorites|Browser_Home|Volume_Mute|Volume_Down|Volume_Up|Media_Next|Media_Prev|Media_Stop|Media_Play_Pause|Launch_Mail|Launch_Media|Launch_App1|Launch_App2|Help|Sleep|PrintScreen|CtrlBreak|Break|AppsKey|NumpadDot|NumpadDiv|NumpadMult|NumpadAdd|NumpadSub|NumpadEnter|Tab|Enter|Esc|BackSpace"
 	           . "|Del|Insert|Home|End|PgUp|PgDn|Up|Down|Left|Right|ScrollLock|CapsLock|NumLock|Pause|sc145|sc146|sc046|sc123"
 	Loop, parse, Otherkeys, |
 	{
@@ -79,10 +80,10 @@ CreateHotkey() {
 		Hotkey, % "~*" A_LoopField " Up", _OnKeyUp
 	}
 
-	If ShowMouseButton {
-		Loop, Parse, % "LButton|MButton|RButton", |
-			Hotkey, % "~*" A_LoopField, OnKeyPressed
-	}
+	; If ShowMouseButton {
+	; 	Loop, Parse, % "LButton|MButton|RButton", |
+	; 		Hotkey, % "~*" A_LoopField, OnKeyPressed
+	; }
 
 	for i, mod in ["Ctrl", "Shift", "Alt"] {
 		Hotkey, % "~*" mod, OnKeyPressed
@@ -92,15 +93,15 @@ CreateHotkey() {
 		Hotkey, % "~*" mod, OnKeyPressed
 }
 
-MouseHotkey_On() {
-	Loop, Parse, % "LButton|MButton|RButton", |
-		Hotkey, % "~*" A_LoopField, On, UseErrorLevel
-}
+; MouseHotkey_On() {
+; 	Loop, Parse, % "LButton|MButton|RButton", |
+; 		Hotkey, % "~*" A_LoopField, On, UseErrorLevel
+; }
 
-MouseHotkey_Off() {
-	Loop, Parse, % "LButton|MButton|RButton", |
-		Hotkey, % "~*" A_LoopField, Off, UseErrorLevel
-}
+; MouseHotkey_Off() {
+; 	Loop, Parse, % "LButton|MButton|RButton", |
+; 		Hotkey, % "~*" A_LoopField, Off, UseErrorLevel
+; }
 
 ShowHotkey(HotkeyStr) {
 	if SettingsGuiIsOpen {
@@ -277,7 +278,7 @@ ReadSettings() {
 
 	IniRead, TransN               , %IniFile%, Settings, TransN               , 200
 	IniRead, ShowSingleKey        , %IniFile%, Settings, ShowSingleKey        , 1
-	IniRead, ShowMouseButton      , %IniFile%, Settings, ShowMouseButton      , 1
+	; IniRead, ShowMouseButton      , %IniFile%, Settings, ShowMouseButton      , 1
 	IniRead, ShowSingleModifierKey, %IniFile%, Settings, ShowSingleModifierKey, 1
 	IniRead, ShowModifierKeyCount , %IniFile%, Settings, ShowModifierKeyCount , 1
 	IniRead, ShowStickyModKeyCount, %IniFile%, Settings, ShowStickyModKeyCount, 0
@@ -308,7 +309,7 @@ SaveSettings() {
 
 	IniWrite, %TransN%               , %IniFile%, Settings, TransN
 	IniWrite, %ShowSingleKey%        , %IniFile%, Settings, ShowSingleKey
-	IniWrite, %ShowMouseButton%      , %IniFile%, Settings, ShowMouseButton
+	; IniWrite, %ShowMouseButton%      , %IniFile%, Settings, ShowMouseButton
 	IniWrite, %ShowSingleModifierKey%, %IniFile%, Settings, ShowSingleModifierKey
 	IniWrite, %ShowModifierKeyCount% , %IniFile%, Settings, ShowModifierKeyCount
 	IniWrite, %ShowStickyModKeyCount%, %IniFile%, Settings, ShowStickyModKeyCount
@@ -392,7 +393,7 @@ ShowSettingsGUI() {
 	Gui, s:Add, Text, x+10, Seconds
 
 	Gui, s:Add, Checkbox, xm h24 vShowSingleKey Checked%ShowSingleKey%, Show Single Key
-	Gui, s:Add, Checkbox, xm h24 vShowMouseButton Checked%ShowMouseButton%, Show Mouse Button
+	; Gui, s:Add, Checkbox, xm h24 vShowMouseButton Checked%ShowMouseButton%, Show Mouse Button
 	Gui, s:Add, Checkbox, xm h24 vShowSingleModifierKey Checked%ShowSingleModifierKey%, Show Single Modifier Key
 	Gui, s:Add, Checkbox, xm h24 vShowModifierKeyCount Checked%ShowModifierKeyCount%, Show Modifier Key Count
 	Gui, s:Add, Checkbox, xm h24 vShowStickyModKeyCount Checked%ShowStickyModKeyCount%, Show Sticky Modifier Key Count
@@ -533,7 +534,7 @@ ShowSettingsGUI() {
 		Gui, s:Submit
 		Gosub, _CheckValues
 
-		ShowMouseButton ? MouseHotkey_On() : MouseHotkey_Off()
+		; ShowMouseButton ? MouseHotkey_On() : MouseHotkey_Off()
 
 		if (FontSize_pre != FontSize) {
 			Gui, 1:Font, s%FontSize%
